@@ -28,6 +28,8 @@ namespace GDCS_Programmer
         /// </summary>
         public const int CommandId = 0x0100;
 
+        private const string g_TagFileName = "_DocumentTag";
+
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
@@ -63,6 +65,7 @@ namespace GDCS_Programmer
 
         private static string LoadGoogleDocs()
         {
+            IList<Google.Apis.Drive.v3.Data.File> Files = new List<Google.Apis.Drive.v3.Data.File>();
             string[] Scopes = { DriveService.Scope.DriveReadonly };
             string ApplicationName = "Drive API .NET Quickstart";
             string returnstring = "";
@@ -98,7 +101,7 @@ namespace GDCS_Programmer
 
             // Define parameters of request.
             FilesResource.ListRequest listRequest = service.Files.List();
-            listRequest.PageSize = 100;
+            listRequest.PageSize = 1000;
             listRequest.Fields = "nextPageToken, files(id, name)";
 
             // List files.
@@ -107,12 +110,17 @@ namespace GDCS_Programmer
             Console.WriteLine("Files:");
             returnstring += "Files:";
             returnstring += files.Count;
+            
             if (files != null && files.Count > 0)
             {
                 foreach (var file in files)
                 {
+                    if (file.Name == g_TagFileName)
+                    {
+                        returnstring += string.Format("{0} ({1})\n", file.Name, file.Id);
+
+                    }
                     Console.WriteLine("{0} ({1})", file.Name, file.Id);
-                    returnstring += string.Format("{0} ({1})", file.Name, file.Id);
                 }
             }
             else
