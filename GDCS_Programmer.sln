@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GDCS_Programmer", "GDCS_Programmer\GDCS_Programmer.csproj", "{A60134A8-39AC-47A0-9E79-612D1FFD0771}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A60134A8-39AC-47A0-9E79-612D1FFD0771}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A60134A8-39AC-47A0-9E79-612D1FFD0771}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A60134A8-39AC-47A0-9E79-612D1FFD0771}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A60134A8-39AC-47A0-9E79-612D1FFD0771}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5276C5AD-414C-4FBE-9C4A-A94D367085EC}
+	EndGlobalSection
+EndGlobal
