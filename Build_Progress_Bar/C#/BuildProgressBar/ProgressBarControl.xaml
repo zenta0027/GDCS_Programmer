@@ -1,0 +1,58 @@
+﻿<!--
+
+Copyright (c) Microsoft Corporation. All rights reserved.
+THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF
+ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY
+IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR
+PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
+
+-->
+
+<!--
+<UserControl x:Class="Microsoft.BuildProgressBar.ProgressBarControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="300"
+             Name="ProgressToolWindow"
+             Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}" 
+             SizeChanged="ProgressToolWindow_SizeChanged" Loaded="ProgressToolWindow_Loaded">
+    <Grid>
+        <ProgressBar Height="50" Name="progressBar" Width="250" Minimum="0" Maximum="1" 
+                     Value="0.0" VerticalAlignment="Center" />
+        <Viewbox Name="viewbox" Width="250" Stretch="None">
+            <TextBlock Name="barText" FontSize="12"></TextBlock>
+        </Viewbox>
+    </Grid>
+</UserControl>
+    -->
+<UserControl x:Class="Microsoft.BuildProgressBar.ProgressBarControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             Height="250" Width="360">
+    <Grid Name="grid">
+        <!--<Button Content="Click Here !" Height="50" HorizontalAlignment="Left" Margin="100,100,0,0" Name="Button1" VerticalAlignment="Top" Width="100" Click="Button1_Click" />-->
+        <ListBox HorizontalAlignment="Left" Height="205" Margin="10,35,0,0" VerticalAlignment="Top" Width="340" Name="FolderList" SelectionChanged="lbTodoList_SelectionChanged" PreviewMouseDoubleClick="FolderList_PreviewMouseLeftButtonDown">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Title}" />
+                        <!--<TextBlock Text="{Binding Id}" />-->
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Select(Double Click) Document Folder" VerticalAlignment="Top" Height="20" Width="340" FontSize="15" TextAlignment="Center"/>
+    </Grid>
+</UserControl>

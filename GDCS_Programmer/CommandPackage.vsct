@@ -59,13 +59,6 @@
           <ButtonText>Access Google Drive</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidCommandPackageCmdSet" id="CommandId" priority="0x0100" type="Button">
-        <Parent guid="guidCommandPackageCmdSet" id="MyMenuGroup" />
-        <Icon guid="guidImages" id="bmpPic1" />
-        <Strings>
-          <ButtonText>Open Tag File</ButtonText>
-        </Strings>
-      </Button>
     </Buttons>
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->

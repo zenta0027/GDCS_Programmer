@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth;
 using Google.Apis.Drive.v3;
 using Google.Apis.Drive.v3.Data;
 using Google.Apis.Services;
@@ -15,6 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace GDCS_Programmer
 {
@@ -65,18 +67,18 @@ namespace GDCS_Programmer
 
         private static string LoadGoogleDocs()
         {
-            string tagId;
+            string tagId = "";
             string folderId;
             IList<Google.Apis.Drive.v3.Data.File> Files = new List<Google.Apis.Drive.v3.Data.File>();
             string[] Scopes = { DriveService.Scope.DriveReadonly };
             string ApplicationName = "Drive API .NET Quickstart";
             string returnstring = "";
 
+
             UserCredential credential;
 
             Console.WriteLine("Hello!");
             returnstring = returnstring + "Hello! ";
-
             using (var stream =
                 new FileStream("client_secret.json", FileMode.Open, FileAccess.Read))
             {
@@ -112,22 +114,72 @@ namespace GDCS_Programmer
             Console.WriteLine("Files:");
             returnstring += "Files:";
             returnstring += files.Count;
-            
+
             if (files != null && files.Count > 0)
             {
                 foreach (var file in files)
                 {
+                    
                     if (file.Name == g_TagFileName)
                     {
                         returnstring += string.Format("{0} ({1})\n", file.Name, file.Id);
                         tagId = file.Id;
-                        if (file.Parents.Count > 0)
+                        if (file.Parents != null && file.Parents.Count > 0)
                         {
                             folderId = file.Parents[0];
                         }
                     }
                     Console.WriteLine("{0} ({1})", file.Name, file.Id);
                 }
+            }
+            if(tagId != "")
+            {
+                {
+                    var request1 = service.About.Get();
+                    request1.Fields = "user ";
+
+                    var data1 = request1.Execute();
+                    System.Reflection.PropertyInfo[] properties = typeof(Google.Apis.Drive.v3.Data.User).GetProperties();
+                    returnstring += properties.Length;
+                    foreach (System.Reflection.PropertyInfo property in properties)
+                    {
+                        Console.WriteLine("{0} = {1}\n", property.Name, property.GetValue(data1.User, null));
+                        returnstring += string.Format("{0} = {1}\n", property.Name, property.GetValue(data1.User, null));
+                    }
+                }
+
+                Google.Apis.Drive.v3.Data.File file = service.Files.Get(tagId).Execute();
+
+                returnstring += string.Format("{0} ({1})\n", file.Name, file.Id);
+
+                var request = service.Files.Export(tagId, "text/plain");
+                var stream = new System.IO.MemoryStream();
+
+                request.MediaDownloader.ProgressChanged +=
+                    (Google.Apis.Download.IDownloadProgress progress) =>
+                    {
+                        switch (progress.Status)
+                        {
+                            case Google.Apis.Download.DownloadStatus.Downloading:
+                                {
+                                    returnstring += progress.BytesDownloaded;
+                                    break;
+                                }
+                            case Google.Apis.Download.DownloadStatus.Completed:
+                                {
+                                    returnstring += "Download complete.";
+                                    break;
+                                }
+                            case Google.Apis.Download.DownloadStatus.Failed:
+                                {
+                                    returnstring += "Download failed.";
+                                    break;
+                                }
+                        }
+                    };
+                request.Download(stream);
+                
+                
             }
             else
             {
@@ -213,6 +265,7 @@ namespace GDCS_Programmer
 
         }
 
+
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
@@ -251,7 +304,7 @@ namespace GDCS_Programmer
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-
+            Console.WriteLine(sender);
             string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
             string title = "Command";
 
