@@ -22,8 +22,8 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Select Document File and Press [Select] Button" VerticalAlignment="Top" Height="20" Width="340" FontSize="15" TextAlignment="Center"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Select(Double Click) Document File" VerticalAlignment="Top" Height="20" Width="340" FontSize="15" TextAlignment="Center"/>
         <Button Content="Back" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10,220,0,0" Click="Button_Click" />
-        <Button Content="Select" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="275,220,0,0" Click="Button_Click_1"/>
+        <!--<Button Content="Select" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="275,220,0,0" Click="Button_Click_1"/>-->
     </Grid>
 </UserControl>

@@ -105,6 +105,16 @@ namespace Microsoft.BuildProgressBar
                 }
                 FolderList.ItemsSource = items;
             }
+            else if (!((FolderItem)FolderList.SelectedItem).Type.Contains("document"))
+            {
+                MessageBox.Show("It is not a document file!", "Warning");
+                return;
+            }
+            else
+            {
+                Credential.Instance.SetTagId(((FolderItem)FolderList.SelectedItem).Id);
+                BuildProgressToolWindow.Instance.LoadDocumentUI(((FolderItem)FolderList.SelectedItem).Title, ((FolderItem)FolderList.SelectedItem).Id);
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

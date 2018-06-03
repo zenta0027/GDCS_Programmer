@@ -4,27 +4,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Microsoft.BuildProgressBar"
-             mc:Ignorable="d" Height="300" Width="350">
-    <Grid Margin="0,0,0,0">
-        <Grid Name="buttonGrid" Height="300" VerticalAlignment="Bottom" Margin="0,0,0,0">
-            <Button Name="testButton" Content=" Player Stat" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Height="48" Margin="0,43,0,0" VerticalAlignment="Top" Width="350" Background="LightGreen" FontSize="15"/>
-
+             mc:Ignorable="d" Height="Auto" Width="460">
+    <Grid Name="grid" Margin="0,0,0,0" Height="Auto">
+        <Grid Name="buttonGrid" Height="50" VerticalAlignment="Top" Margin="0,0,0,0">
+            <Button Name="testButton" Content="Text" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Height="50" VerticalAlignment="Top" Width="460" Background="LightGreen" FontSize="15" Click="testButton_Click"/>
+            <CheckBox Name="checkBox" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,0,0" RenderSize="30, 30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="20" Width="20" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked">
+                <CheckBox.LayoutTransform>
+                    <ScaleTransform ScaleX="2" ScaleY="2"/>
+                </CheckBox.LayoutTransform>
+            </CheckBox>
         </Grid>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" Margin="0,296,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="390">
-            <Border BorderThickness="1" BorderBrush="Black" Margin="10, 10, 10, 10">
-                <TextBlock Name="textBlock" HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="280"/>
-            </Border>
-        </ScrollViewer>
-        <Button Content="test" HorizontalAlignment="Left" Margin="0,268,0,0" VerticalAlignment="Top" Width="67" Height="28"/>
-        <Button Content="test2" HorizontalAlignment="Left" Margin="283,268,0,0" VerticalAlignment="Top" Width="67" Height="28"/>
         <!--<TextBlock Name="textBlock" HorizontalAlignment="Left" Height="230" Margin="10,10,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="280"/>-->
-        <ListView Name="listView" Height="151" Margin="0,89,0,0" VerticalAlignment="Top">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn/>
-                </GridView>
-            </ListView.View>
-        </ListView>
-
+        <!--
+        <StackPanel Name="stackPanel" Margin="0,50,0,0" Height="Auto">
+            <Border Name="textBlockBorder" BorderThickness="1" BorderBrush="Black" Margin="10,0,10,0" VerticalAlignment="top">
+                <TextBlock Name="textBlock" HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="280" Height="Auto"/>
+            </Border>
+            
+            <ListBox Name="listView" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="350" MaxHeight="400">
+            </ListBox>
+            
+        </StackPanel>
+        -->
     </Grid>
 </UserControl>

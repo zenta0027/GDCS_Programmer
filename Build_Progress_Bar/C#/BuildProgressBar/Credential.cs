@@ -298,11 +298,14 @@ namespace Microsoft.BuildProgressBar
         }
 
         //public string LoadTextFromId(string id)
-        public MemoryStream LoadTextFromId(string id)
+        //public MemoryStream LoadTextFromId(string id)
+        public DocumentNode LoadTextFromId(string id)
         {
+            DocumentNode rootNode;
             FilesResource.ListRequest listRequest = service.Files.List();
             listRequest.PageSize = 1000;
             listRequest.Fields = "nextPageToken, files(id, name, parents, kind, mimeType, webViewLink)";
+            string name;
 
             //IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
             IList<Google.Apis.Drive.v3.Data.File> new_files = listRequest.Execute().Files;
@@ -314,11 +317,11 @@ namespace Microsoft.BuildProgressBar
                     if (file.Id == id)
                     {
                         //return file.WebViewLink;
+                        name = file.Name;
                     }
                 }
             }
             //return null;
-            
             var request = service.Files.Export(id, "text/plain");
             var stream = new System.IO.MemoryStream();
             // Add a handler which will be notified on progress changes.
@@ -358,7 +361,111 @@ namespace Microsoft.BuildProgressBar
             //{
             //    return reader.ReadToEnd();
             //}
-            return stream;
+
+            //Stream stream = credential.LoadTextFromId(id);
+            string str;
+            List<int> numList = new List<int>();
+            Boolean fileExist = File.Exists(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\Tags\\" + id);
+            List<string> progressList = new List<string>();
+            if(fileExist)
+            {
+                progressList = File.ReadAllLines(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\Tags\\" + id).ToList();
+            }
+            
+            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+            {
+                rootNode = new DocumentNode();
+                rootNode.documentId = id;
+                DocumentNode currentNode = rootNode;
+                while ((str = reader.ReadLine()) != null)
+                {
+                    numList.Add(1);
+                    if (str.Contains(string.Join(".", numList.ConvertAll(x => x.ToString()).ToArray()) + ". "))
+                    {
+                        DocumentNode tempNode = new DocumentNode(str, "", currentNode, numList, 0, id);
+                        currentNode.Childs.Add(tempNode);
+                        currentNode = tempNode;
+                        if(!fileExist)
+                        {
+                            progressList.Add(string.Format("{0}\t0", string.Join(".", numList.ConvertAll(x => x.ToString()).ToArray())));
+                        }
+                        else
+                        {
+                            foreach(string st in progressList)
+                            {
+                                if(st.Split('\t')[0] == string.Join(".", numList.ConvertAll(x => x.ToString()).ToArray()))
+                                {
+                                    tempNode.State = int.Parse(st.Split('\t')[1]);
+                                }
+                            }
+                        }
+                        continue;
+                    }
+                    numList.RemoveAt(numList.Count - 1);
+                    if (numList.Count > 0)
+                    {
+                        numList[numList.Count - 1] += 1;
+                        if (str.Contains(string.Join(".", numList.ConvertAll(x => x.ToString()).ToArray()) + ". "))
+                        {
+                            DocumentNode tempNode = new DocumentNode(str, "", currentNode.Parent, numList, 0, id);
+                            currentNode.Parent.Childs.Add(tempNode);
+                            currentNode = tempNode;
+                            if (!fileExist)
+                            {
+                                progressList.Add(string.Format("{0}\t0", string.Join(".", numList.ConvertAll(x => x.ToString()).ToArray())));
+                            }
+                            else
+                            {
+                                foreach (string st in progressList)
+                                {
+                                    if (st.Split('\t')[0] == string.Join(".", numList.ConvertAll(x => x.ToString()).ToArray()))
+                                    {
+                                        tempNode.State = int.Parse(st.Split('\t')[1]);
+                                    }
+                                }
+                            }
+                            continue;
+                        }
+                        numList[numList.Count - 1] -= 1;
+                    }
+                    if (numList.Count > 1)
+                    {
+                        int n = numList[numList.Count - 1];
+                        numList.RemoveAt(numList.Count - 1);
+                        numList[numList.Count - 1] += 1;
+                        if (str.Contains(string.Join(".", numList.ConvertAll(x => x.ToString()).ToArray()) + ". "))
+                        {
+                            DocumentNode tempNode = new DocumentNode(str, "", currentNode.Parent.Parent, numList, 0, id);
+                            currentNode.Parent.Parent.Childs.Add(tempNode);
+                            currentNode = tempNode;
+                            if (!fileExist)
+                            {
+                                progressList.Add(string.Format("{0}\t0", string.Join(".", numList.ConvertAll(x => x.ToString()).ToArray())));
+                            }
+                            else
+                            {
+                                foreach (string st in progressList)
+                                {
+                                    if (st.Split('\t')[0] == string.Join(".", numList.ConvertAll(x => x.ToString()).ToArray()))
+                                    {
+                                        tempNode.State = int.Parse(st.Split('\t')[1]);
+                                    }
+                                }
+                            }
+                            continue;
+                        }
+                        numList[numList.Count - 1] -= 1;
+                        numList.Add(n);
+                    }
+                    currentNode.Content += (str + "\n");
+                }
+            }
+            //return stream;
+            if(!fileExist)
+            {
+                File.WriteAllLines(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\Tags\\" + id, progressList);
+            }
+            return rootNode;
         }
 
         public void TestUpdate()
@@ -557,14 +664,106 @@ namespace Microsoft.BuildProgressBar
         public string Title;
         public string Content;
         public List<DocumentNode> Childs;
-        public DocumentNode Parent; 
+        public DocumentNode Parent;
+        public List<int> Index;
+        public int State;
+        public string documentId;
 
-        public DocumentNode(string title = "", string content = "", DocumentNode parent = null)
+        public DocumentNode(string title = "", string content = "", DocumentNode parent = null, List<int> index = null, int state = 0, string id = "")
         {
             Title = title;
             Content = content;
             Childs = new List<DocumentNode>();
             Parent = parent;
+            if(index != null)
+            {
+                Index = new List<int>(index);
+            }
+            else
+            {
+                index = null;
+            }
+            State = state;
+            documentId = id;
+        }
+
+        public void ChangeState(int newState)
+        {
+            State = newState;
+            if(newState == 2)
+            {
+                List<string> progressList = new List<string>();
+                progressList = File.ReadAllLines(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\Tags\\" + documentId).ToList();
+                for (int i = 0; i < progressList.Count; i++)
+                {
+                    if (Index != null)
+                    {
+                        if (progressList[i].Split('\t')[0] == string.Join(".", Index))
+                        {
+                            progressList[i] = string.Format("{0}\t{1}", string.Join(".", Index), newState);
+                        }
+                    }
+                }
+                File.WriteAllLines(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\Tags\\" + documentId, progressList);
+                List<string> lineList = File.ReadAllLines(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\Tags\\_CodeTag").ToList();
+
+                for (int i = 0; i < lineList.Count; i++)
+                {
+                    string[] elements = lineList[i].Split('\t');
+                    if (Index != null)
+                    {
+                        if (elements[0] == documentId && string.Join(".", Index) == elements[3])
+                        {
+                            elements[4] = "1";
+                            string str = String.Join("\t", elements);
+                            lineList[i] = str;
+                        }
+                    }
+                    else
+                    {
+                        if (elements[0] == documentId && "All" == elements[3])
+                        {
+                            elements[4] = "1";
+                            string str = String.Join("\t", elements);
+                            lineList[i] = str;
+                        }
+                    }
+                }
+                File.WriteAllLines(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\Tags\\_CodeTag", lineList.ToArray());
+
+                if (Parent != null)
+                {
+                    if(Parent.State == 0)
+                    {
+                        Parent.ChangeState(1);
+                    }
+                }
+                foreach(DocumentNode node in Childs)
+                {
+                    node.ChangeState(2);
+                }
+            }
+            else if(newState == 1 || newState == 0)
+            {
+                List<string> progressList = new List<string>();
+                progressList = File.ReadAllLines(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\Tags\\" + documentId).ToList();
+                for (int i = 0; i < progressList.Count; i++)
+                {
+                    if (Index != null)
+                    {
+                        if (progressList[i].Split('\t')[0] == string.Join(".", Index))
+                        {
+                            progressList[i] = string.Format("{0}\t{1}", string.Join(".", Index), newState);
+                        }
+                    }
+                }
+                if (Parent != null)
+                {
+                    Parent.ChangeState(1);
+                }
+
+            }
+
         }
     }
 }

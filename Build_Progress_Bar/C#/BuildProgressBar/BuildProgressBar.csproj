@@ -212,6 +212,9 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
     <Compile Include="ProgressBarPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PkgCmdID.cs" />
+    <Compile Include="TagElement.xaml.cs">
+      <DependentUpon>TagElement.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ToolboxControl1.xaml.cs">
       <DependentUpon>ToolboxControl1.xaml</DependentUpon>
     </Compile>
@@ -267,10 +270,17 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="TagElement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ToolboxControl1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tags\" />
   </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>

@@ -36,7 +36,7 @@ namespace Microsoft.BuildProgressBar
     {
         private ProgressBarControl progressBar;
         private ToolboxControl1 toolbox;
-        private DocumentUI documentUI;
+        public DocumentUI documentUI;
         private MainUI mainUI;
         private bool enableEffects = false;
 
@@ -111,9 +111,28 @@ namespace Microsoft.BuildProgressBar
 
         public void LoadDocumentUI(string name, string fileId)
         {
-            documentUI = new DocumentUI(name, fileId);
+            Credential credential;
+            if (Credential.Instance == null)
+            {
+                credential = new Credential();
+                credential.InitCredential();
+                credential.CreateService();
+                credential.LoadFiles();
+            }
+            else
+            {
+                credential = Credential.Instance;
+            }
+            DocumentNode rootNode = credential.LoadTextFromId(fileId);
+            rootNode.Title = name;
+            documentUI = new DocumentUI(rootNode, fileId);
             mainUI.grid.Children.Clear();
             mainUI.grid.Children.Add(documentUI);
+        }
+
+        public void RefreshUI(DocumentNode node)
+        {
+            documentUI.RefreshUI(node);
         }
 
         /// <summary>
